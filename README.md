@@ -54,7 +54,7 @@ python -m attack.launch attack/adv_attack.py --name imgcls-sweep-train -p --gpus
 
 For more command-line options, please refer to the [zoology readme](https://github.com/HazyResearch/zoology/blob/main/README.md) page.
 
-In addition to training from scratch, you may also download our pretrained models [here]() and put them under `logs/imgcls`.
+In addition to training from scratch, you may also download our pretrained models [here](https://huggingface.co/peihaowang/ssm-bottleneck-imgcls-attack) and put them under `logs/imgcls`.
 
 
 ### Evaluation
