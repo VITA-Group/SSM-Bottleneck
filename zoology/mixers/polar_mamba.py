@@ -145,16 +145,16 @@ class PolarizedMamba(nn.Module):
 
         A = -torch.exp(self.A_log.float())  # (d_inner, d_state - d_zeros - d_ones)
 
+        A_list = [A]
+        if self.d_ones >= 1:
+            A_list.insert(0, torch.full((A.shape[0], self.d_ones), self.value_ones, device=A.device, dtype=torch.float32))
+        if self.d_zeros >= 1:
+            A_list.append(torch.full((A.shape[0], self.d_zeros), self.value_zeros, device=A.device, dtype=torch.float32))
+        A = torch.cat(A_list, -1)
+        assert A.shape[-1] == self.d_state
+        
         # In the backward pass we write dx and dz next to each other to avoid torch.cat
         if self.use_fast_path and inference_params is None:  # Doesn't support outputting the states
-            A_list = [A]
-            if self.d_ones >= 1:
-                A_list.insert(0, torch.full((A.shape[0], self.d_ones), self.value_ones, device=A.device, dtype=torch.float32))
-            if self.d_zeros >= 1:
-                A_list.append(torch.full((A.shape[0], self.d_zeros), self.value_zeros, device=A.device, dtype=torch.float32))
-            A = torch.cat(A_list, -1)
-            assert A.shape[-1] == self.d_state
-            
             out = mamba_inner_fn(
                 xz,
                 self.conv1d.weight,
